@@ -161,6 +161,10 @@ def update_graph(selected_symbols, exit_threshold, entry_threshold):
                      go.Scatter(x=[position['entry_date']], y=[position['entry_y']], mode='markers', marker=dict(symbol='star', size=10, color='blue'), name=f'{position["symbol"]} 진입 지점'),
                      go.Scatter(x=[position['exit_date']], y=[position['exit_y']], mode='markers', marker=dict(symbol='star', size=10, color='red'), name=f'{position["symbol"]} 청산 지점')])
 
+    # 펀딩비 데이터를 추가하여 다른 축에 그리기
+    funding_data = df_funding[df_funding['date'].isin(filtered_df['date'])]
+    data.append(go.Scatter(x=funding_data['date'], y=funding_data['펀딩비'], mode='lines', name='펀딩비', yaxis='y2', line=dict(color='green')))
+
     return {
         'data': data,
         'layout': go.Layout(
@@ -171,9 +175,10 @@ def update_graph(selected_symbols, exit_threshold, entry_threshold):
                 side='left'
             ),
             yaxis2=dict(
-                title='괴리율 (%)',
+                title='펀딩비 (%)',
                 overlaying='y',
-                side='right'
+                side='right',
+                showgrid=False
             ),
             hovermode='closest',
             showlegend=True
